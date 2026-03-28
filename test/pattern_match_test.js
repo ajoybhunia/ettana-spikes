@@ -78,16 +78,6 @@ describe("matchPattern", () => {
     assertEquals(matchPattern(board, pattern), true);
   });
 
-  it("should not match if pattern does not exist", () => {
-    const nonMatchingPattern = [
-      { coord: { x: 0, y: 0 }, color: 1 },
-      { coord: { x: 1, y: 0 }, color: 1 },
-      { coord: { x: 2, y: 0 }, color: 1 },
-    ];
-
-    assertEquals(matchPattern(board, nonMatchingPattern), false);
-  });
-
   it("should match pattern after translation", () => {
     const shiftedPattern = [
       { coord: { x: 2, y: 0 }, color: 1 },
@@ -129,14 +119,14 @@ describe("matchPattern", () => {
     assertEquals(matchPattern(board, largePattern), false);
   });
 
-  it("should match vertical pattern if present", () => {
+  it("should match vertical pattern after rotation", () => {
     const verticalPattern = [
       { coord: { x: 0, y: 0 }, color: 1 },
       { coord: { x: 1, y: 0 }, color: 1 },
       { coord: { x: 2, y: 0 }, color: 1 },
     ];
 
-    assertEquals(matchPattern(board, verticalPattern), false);
+    assertEquals(matchPattern(board, verticalPattern), true);
   });
 
   it("should match a pattern that present before the actual design coordinate", () => {
@@ -148,5 +138,50 @@ describe("matchPattern", () => {
     ];
 
     assertEquals(matchPattern(board, pattern), true);
+  });
+
+  it("complex pattern matches after translation", () => {
+    const yarns = [
+      [2, 1, 1, 3, 1],
+      [2, 2, 3, 1, 2],
+      [3, 2, 1, 3, 3],
+      [4, 4, 5, 1, 1],
+      [4, 5, 1, 5, 5],
+    ];
+
+    const pattern = [
+      { coord: { x: 1, y: 1 }, color: 1 },
+      { coord: { x: 1, y: 4 }, color: 2 },
+      { coord: { x: 2, y: 2 }, color: 1 },
+      { coord: { x: 2, y: 3 }, color: 2 },
+      { coord: { x: 3, y: 2 }, color: 3 },
+      { coord: { x: 3, y: 3 }, color: 4 },
+      { coord: { x: 4, y: 1 }, color: 3 },
+      { coord: { x: 4, y: 4 }, color: 4 },
+    ];
+
+    assertEquals(matchPattern({ yarns }, pattern), true);
+  });
+
+  it("complex pattern matches after rotation", () => {
+    const yarns = [
+      [2, 1, 3, 3, 1],
+      [2, 2, 3, 3, 2],
+      [2, 2, 2, 1, 3],
+      [2, 4, 5, 3, 1],
+      [2, 5, 1, 3, 5],
+    ];
+
+    const pattern = [
+      { coord: { x: 0, y: 2 }, color: 1 },
+      { coord: { x: 1, y: 2 }, color: 1 },
+      { coord: { x: 2, y: 2 }, color: 2 },
+      { coord: { x: 2, y: 3 }, color: 3 },
+      { coord: { x: 2, y: 4 }, color: 3 },
+      { coord: { x: 3, y: 2 }, color: 1 },
+      { coord: { x: 4, y: 2 }, color: 1 },
+    ];
+
+    assertEquals(matchPattern({ yarns }, pattern), true);
   });
 });

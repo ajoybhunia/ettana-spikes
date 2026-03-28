@@ -55,8 +55,7 @@ const matchesAt = (yarns, points, startX, startY) => {
   });
 };
 
-export const matchPattern = ({ yarns }, pattern) => {
-  const grid = generatePatternGrid(pattern);
+const doesPatternMatch = (yarns, grid) => {
   const points = extractPoints(grid);
 
   const patternHeight = grid.length;
@@ -69,6 +68,24 @@ export const matchPattern = ({ yarns }, pattern) => {
     for (let j = 0; j < boardWidth - patternWidth + 1; j++) {
       if (matchesAt(yarns, points, i, j)) return true;
     }
+  }
+
+  return false;
+};
+
+const transpose = (matrix) =>
+  matrix[0].map((_, colIndex) => matrix.map((row) => row[colIndex]));
+
+const reverse = (matrix) => matrix.map((row) => row.toReversed());
+
+const rotate = (matrix) => reverse(transpose(matrix));
+
+export const matchPattern = ({ yarns }, pattern) => {
+  let grid = generatePatternGrid(pattern);
+
+  for (let count = 0; count < 4; count++) {
+    if (doesPatternMatch(yarns, grid)) return true;
+    grid = rotate(grid);
   }
 
   return false;
