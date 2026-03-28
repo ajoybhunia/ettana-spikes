@@ -1,6 +1,8 @@
-import { matchPattern } from "../src/pattern_match.js";
+// import { matchPattern } from "../src/pattern_match.js";
+
 import { assertEquals } from "@std/assert";
 import { beforeAll, describe, it } from "@std/testing/bdd";
+import { matchPattern } from "../src/grid_match.js";
 
 describe("matchPattern", () => {
   let board;
