@@ -10,9 +10,9 @@ describe("matchPattern", () => {
       yarns: [
         [2, 1, 1, 1, 1],
         [2, 3, 2, 2, 2],
-        [3, 3, 3, 3, 3],
+        [3, 3, 1, 3, 3],
         [4, 4, 4, 3, 1],
-        [5, 5, 5, 5, 5],
+        [5, 5, 1, 5, 5],
       ],
       tiles: [
         [
@@ -135,5 +135,16 @@ describe("matchPattern", () => {
     ];
 
     assertEquals(matchPattern(board, verticalPattern), false);
+  });
+
+  it("should match a pattern that present before the actual design coordinate", () => {
+    const pattern = [
+      { coord: { x: 4, y: 0 }, color: 1 },
+      { coord: { x: 4, y: 1 }, color: 1 },
+      { coord: { x: 4, y: 2 }, color: 1 },
+      { coord: { x: 4, y: 3 }, color: 1 },
+    ];
+
+    assertEquals(matchPattern(board, pattern), true);
   });
 });

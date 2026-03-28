@@ -7,6 +7,19 @@ const move = (pattern, dx, dy) => {
   });
 };
 
+const normalize = (pattern) => {
+  const minX = Math.min(...pattern.map((p) => p.coord.x));
+  const minY = Math.min(...pattern.map((p) => p.coord.y));
+
+  return pattern.map((p) => ({
+    coord: {
+      x: p.coord.x - minX,
+      y: p.coord.y - minY,
+    },
+    color: p.color,
+  }));
+};
+
 const translatePattern = (pattern, maxDown, maxRight) => {
   const variations = [];
 
@@ -20,16 +33,18 @@ const translatePattern = (pattern, maxDown, maxRight) => {
 };
 
 const translate = (pattern) => {
-  const rows = pattern.map((p) => p.coord.x);
-  const cols = pattern.map((p) => p.coord.y);
+  const normalized = normalize(pattern);
 
-  const maxX = Math.max(...rows);
-  const maxY = Math.max(...cols);
+  const rows = normalized.map((p) => p.coord.x);
+  const cols = normalized.map((p) => p.coord.y);
 
-  const maxDown = 5 - (maxX + 1);
-  const maxRight = 5 - (maxY + 1);
+  const height = Math.max(...rows) + 1;
+  const width = Math.max(...cols) + 1;
 
-  return translatePattern(pattern, maxDown, maxRight);
+  const maxDown = 5 - height;
+  const maxRight = 5 - width;
+
+  return translatePattern(normalized, maxDown, maxRight);
 };
 
 const generateVariations = (pattern) => {
