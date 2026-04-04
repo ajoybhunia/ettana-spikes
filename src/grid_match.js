@@ -43,30 +43,46 @@ const extractPoints = (grid) => {
 };
 
 const matchesAt = (yarns, points, startX, startY) => {
-  const colorHash = {};
+  const colorToYarn = {};
+  const yarnToColor = {};
+  const coords = [];
 
-  return points.every(({ x, y, color }) => {
-    const yarn = yarns[x + startX][y + startY];
+  for (const { x, y, color } of points) {
+    const boardX = x + startX;
+    const boardY = y + startY;
+    const yarn = yarns[boardX][boardY];
 
-    if (color in colorHash) return colorHash[color] === yarn;
+    if (color in colorToYarn) {
+      if (colorToYarn[color] !== yarn) return null;
+    } else {
+      colorToYarn[color] = yarn;
+    }
 
-    colorHash[color] = yarn;
-    return true;
-  });
+    if (yarn in yarnToColor) {
+      if (yarnToColor[yarn] !== color) return null;
+    } else {
+      yarnToColor[yarn] = color;
+    }
+
+    coords.push({ x: boardX, y: boardY });
+  }
+
+  return coords;
 };
 
 const doesPatternMatch = (yarns, grid) => {
   const points = extractPoints(grid);
 
-  const patternHeight = grid.length;
-  const patternWidth = grid[0].length;
+  const maxX = Math.max(...points.map((p) => p.x));
+  const maxY = Math.max(...points.map((p) => p.y));
 
   const boardHeight = yarns.length;
   const boardWidth = yarns[0].length;
 
-  for (let i = 0; i < boardHeight - patternHeight + 1; i++) {
-    for (let j = 0; j < boardWidth - patternWidth + 1; j++) {
-      if (matchesAt(yarns, points, i, j)) return true;
+  for (let i = 0; i < boardHeight - maxX; i++) {
+    for (let j = 0; j < boardWidth - maxY; j++) {
+      const result = matchesAt(yarns, points, i, j);
+      if (result) return result;
     }
   }
 
@@ -84,7 +100,10 @@ export const matchPattern = ({ yarns }, pattern) => {
   let grid = generatePatternGrid(pattern);
 
   for (let count = 0; count < 4; count++) {
-    if (doesPatternMatch(yarns, grid)) return true;
+    const matches = doesPatternMatch(yarns, grid);
+
+    if (matches) return matches;
+
     grid = rotate(grid);
   }
 
